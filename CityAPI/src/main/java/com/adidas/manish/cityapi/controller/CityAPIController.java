@@ -15,7 +15,7 @@ import com.adidas.manish.cityapi.service.CityService;
 
 
 @RestController
-@RequestMapping("/cityAPI")
+@RequestMapping("/api")
 //@CrossOrigin
 public class CityAPIController {
 

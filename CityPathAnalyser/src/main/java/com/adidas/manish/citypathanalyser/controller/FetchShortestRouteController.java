@@ -121,6 +121,6 @@ public class FetchShortestRouteController {
 		//System.out.println("uri:"+ins.getUri());
 		System.out.println("====Sending request for source="+source+"======");
 		//return new RestTemplate().getForObject(ins.getUri()+"/cityAPI/getDetinationCities/"+source,CityAPIModel.class);
-		return template.getForObject("http://CITYAPI"+"/cityAPI/getDetinationCities/"+source,CityAPIModel.class);
+		return template.getForObject("http://CITYAPI"+"/CityAPI/api/getDetinationCities/"+source,CityAPIModel.class);
 	}
 }
