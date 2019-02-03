@@ -11,16 +11,15 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.adidas.manish.citypathanalyser.exception.DestinationNotReachableException;
 import com.adidas.manish.citypathanalyser.model.BFSResults;
 import com.adidas.manish.citypathanalyser.model.CityAPIModel;
 import com.adidas.manish.citypathanalyser.model.DestinationCities;
@@ -43,7 +42,7 @@ public class FetchShortestRouteController {
 	
 	long[][] graph;*/
 	@GetMapping(value="/getRoutes/{source}/{destination}")
-	public ResponseEntity<Object> getRoutes(@PathVariable String source,@PathVariable String destination){
+	public ResponseEntity<List<Routes>> getRoutes(@PathVariable String source,@PathVariable String destination) throws DestinationNotReachableException{
 		
 		HashMap<String,Integer> map=new HashMap<>();
 		HashMap<String,List<DestinationCities>> tempMap=new HashMap<>();
@@ -76,11 +75,12 @@ public class FetchShortestRouteController {
 		System.out.println("Map for cities:"+map);
 		System.out.println("tempmap:"+tempMap);
 		if(!map.containsKey(destination)) {
-			return new ResponseEntity<>("Destination is not reachable from source.",HttpStatus.BAD_REQUEST);
+			//return new ResponseEntity<>("Destination is not reachable from source.",HttpStatus.BAD_REQUEST);
+			throw new DestinationNotReachableException("Destination '"+destination+"' is not reachable from source '"+source+"'");
 		}
 		graph=new long[key][key];
 		buildGraph(graph,map,tempMap);
-		System.out.println("graph built:"+graph);
+		//System.out.println("graph built:"+graph);
 		DijkstraPathAndDistances pathAndDist= DijkstrasAlgorithm.dijkstra(graph, 0,map.get(destination));
 		BFSResults res=BFSAlgorithm.minEdgeBFS(graph, 0,map.get(destination), key);
 		Routes shortRoute=new Routes("SHORTEST", ShortestRoute.valueOf(pathAndDist, map, destination));
@@ -89,33 +89,24 @@ public class FetchShortestRouteController {
 		obj.add(minConnRoute);
 		obj.add(shortRoute);
 		//System.out.println("model:"+model);
-		ResponseEntity<Object> entity=new ResponseEntity<>(obj,HttpStatus.OK);
+		ResponseEntity<List<Routes>> entity=new ResponseEntity<>(obj,HttpStatus.OK);
 		return entity;
 	}
 	
 	private void buildGraph(long[][] graph, HashMap<String, Integer> map, HashMap<String, List<DestinationCities>> tempMap) {
-		System.out.println("building graph with length:"+graph.length);
+		//System.out.println("building graph with length:"+graph.length);
 		try {
-		/*this.tempMap.forEach((k,v)->{
-			System.out.println("iterating key:"+k+"\nval:"+v);
-			v.forEach(city->{
-				System.out.println("iterating city:"+city+"\n-- "+map.get(k)+"\n-- "+map.get(city.getDestinationCity()));
-				this.graph[map.get(k)][map.get(city.getDestinationCity())]=city.getTimeDurationMinutes();
-				System.out.println("graph:"+graph);
-			});
 			
-		});*/
-		
 		Set<Map.Entry<String, List<DestinationCities>>> entries=tempMap.entrySet();
 		for(Map.Entry<String, List<DestinationCities>> entry:entries) {
 			String key=entry.getKey();
 			List<DestinationCities> vals=entry.getValue();
-			System.out.println("iterating key:"+key+"\nval:"+vals);
+			//System.out.println("iterating key:"+key+"\nval:"+vals);
 
 			for(DestinationCities city:vals) {
-				System.out.println("iterating city:"+city+"\n-- "+map.get(key)+"\n-- "+map.get(city.getDestinationCity()));
+				//System.out.println("iterating city:"+city+"\n-- "+map.get(key)+"\n-- "+map.get(city.getDestinationCity()));
 				graph[map.get(key)][map.get(city.getDestinationCity())]=city.getTimeDurationMinutes();
-				System.out.println("graph:"+graph);
+				//System.out.println("graph:"+graph);
 			}
 		}
 		}
