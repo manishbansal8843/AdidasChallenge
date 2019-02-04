@@ -1,6 +1,7 @@
 package com.adidas.manish.citypathanalyser.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -9,10 +10,15 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -120,7 +126,19 @@ public class FetchShortestRouteController {
 		//ServiceInstance ins=this.client.getInstances("CITYAPI").get(0);
 		//System.out.println("uri:"+ins.getUri());
 		System.out.println("====Sending request for source="+source+"======");
+		HttpEntity<String> request = new HttpEntity<String>(getHeaders());
 		//return new RestTemplate().getForObject(ins.getUri()+"/cityAPI/getDetinationCities/"+source,CityAPIModel.class);
-		return template.getForObject("http://CITYAPI"+"/CityAPI/api/getDetinationCities/"+source,CityAPIModel.class);
+		//return template.getForObject("http://CITYAPI"+"/CityAPI/api/getDetinationCities/"+source,CityAPIModel.class);
+		return template.exchange("http://CITYAPI"+"/CityAPI/api/getDetinationCities/"+source,HttpMethod.GET,request,CityAPIModel.class).getBody();
+
 	}
+	 private static HttpHeaders getHeaders(){
+	        String plainCredentials="adidas:adidas";
+	        String base64Credentials = new String(Base64.encodeBase64(plainCredentials.getBytes()));
+	         
+	        HttpHeaders headers = new HttpHeaders();
+	        headers.add("Authorization", "Basic " + base64Credentials);
+	        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+	        return headers;
+	    }
 }
