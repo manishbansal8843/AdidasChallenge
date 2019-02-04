@@ -12,12 +12,12 @@ import org.springframework.stereotype.Component;
 @Aspect
 public class LoggingAspect {
 	
-	@AfterThrowing(pointcut = "execution(* com.adidas.manish.citypathanalyser.service.*.*(..))", throwing = "exception")
+	@AfterThrowing(pointcut = "execution(* com.adidas.manish.citypathanalyser.controller.*.*(..))", throwing = "exception")
 	public void logExceptionFromService(Exception exception) throws Exception {	
 			log(exception);			
 	}
 	
-	@Around("execution(* com.adidas.manish.citypathanalyser.service.*.*(..))")
+	@Around("execution(* com.adidas.manish.citypathanalyser.controller.*.*(..))")
     public Object logDetails(ProceedingJoinPoint joinPoint) throws Throwable {
             log("Before executing method "+joinPoint.getSignature());
             Object ret=joinPoint.proceed();
