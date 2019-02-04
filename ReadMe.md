@@ -24,6 +24,8 @@ All apis can be accessed via zuul server. Below are the various end-points.
 
 5. To access Eureka dashboard: http://localhost:2222
 
+6. To access zipkin server: http://localhost:4444/zipkin
+
 # Config server repository
 
 Configurations of the application are present in a separate repository. Same can be referred from [here](https://github.com/manishbansal8843/adidas-challenge-config).
