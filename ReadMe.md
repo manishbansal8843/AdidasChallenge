@@ -1,6 +1,6 @@
 # About the repository
 
-This repository contains the source code for a spring-boot microservices application. 
+This repository contains the source code for a spring-boot microservices application implemented as part of Adidas coding challenge. 
 
 # Problem statement
 

@@ -37,6 +37,7 @@ public class ZuulApplication {
 				return false;
 			}
 
+			@SuppressWarnings("unchecked")
 			@Override
 			public Object run() {
 				final List<String> routingDebug = (List<String>) RequestContext.getCurrentContext().get("routingDebug");

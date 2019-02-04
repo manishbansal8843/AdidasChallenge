@@ -1,3 +1,17 @@
+create database `city_api`;
+use `city_api`;
+
+DROP TABLE IF EXISTS `city`;
+
+CREATE TABLE `city` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `arrival_time` time DEFAULT NULL,
+  `city` varchar(255) DEFAULT NULL,
+  `departure_time` time DEFAULT NULL,
+  `destination_city` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=29 DEFAULT CHARSET=latin1;
+
 insert into city(id,departure_time,city,arrival_time,destination_city) values (1,'08:00:00','zero','12:00:00','one');
 insert into city(id,departure_time,city,arrival_time,destination_city) values (2,'08:00:00','zero','16:00:00','seven');
 insert into city(id,departure_time,city,arrival_time,destination_city) values (3,'08:00:00','one','16:00:00','two');
